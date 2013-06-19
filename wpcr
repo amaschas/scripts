@@ -9,18 +9,30 @@ then
     exit 1
 fi
 
-vip=false
+VIP=false
+DB_NAME=
+DB_USER="root"
+DB_PASSWORD=
+SITE_NAME=$1
 
-while getopts v flag; do
+OPTIND=2
+while getopts vd:u:p: flag; do
   case $flag in
-    v) vip=true ; shift;;
+    v) VIP=true;;
+    d) DB_NAME=$OPTARG;;
+    u) DB_USER=$OPTARG;;
+    p) DB_PASSWORD=$OPTARG;;
     \?) echo "Invalid option: -$OPTARG" >&2 ; exit 1;;
   esac
 done
 
-svn co http://core.svn.wordpress.org/trunk/ $1
+svn co http://core.svn.wordpress.org/trunk/ $SITE_NAME
+cp $SITE_NAME/wp-config-sample.php $SITE_NAME/wp-config.php
+sed -i '' "s/database_name_here/$DB_NAME/" $SITE_NAME/wp-config.php
+sed -i '' "s/username_here/$DB_USER/" $SITE_NAME/wp-config.php
+sed -i '' "s/password_here/$DB_PASSWORD/" $SITE_NAME/wp-config.php
 
-if [ vip ]
+if $VIP
 then
   echo "$1/wp-content/themes/vip/plugins"
   svn co https://vip-svn.wordpress.com/plugins/ "$1/wp-content/themes/vip/plugins"
