@@ -1,0 +1,5 @@
+#!/bin/bash
+
+mysql -u root $1 -e "update wp_options set option_value = '$2' where option_name = 'siteurl'"
+mysql -u root $1 -e "update wp_options set option_value = '$2' where option_name = 'home'"
+mysql -u root $1 -e "update wp_users set user_pass = md5('$3') where user_login = 'admin'"
